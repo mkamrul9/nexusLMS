@@ -1,5 +1,7 @@
 using System.Text;
+using AssignmentSubmissionSystem.Domain.Interfaces;
 using AssignmentSubmissionSystem.Infrastructure.Persistence;
+using AssignmentSubmissionSystem.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +16,9 @@ builder.Services.AddSwaggerGen();
 // Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register the generic repository
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
