@@ -12,10 +12,27 @@ namespace AssignmentSubmissionSystem.Infrastructure.Persistence
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CourseTeacher> CourseTeachers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure Composite Key for CourseTeacher
+            modelBuilder.Entity<CourseTeacher>()
+                .HasKey(ct => new { ct.CourseId, ct.TeacherId });
+
+            modelBuilder.Entity<CourseTeacher>()
+                .HasOne(ct => ct.Course)
+                .WithMany()
+                .HasForeignKey(ct => ct.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CourseTeacher>()
+                .HasOne(ct => ct.Teacher)
+                .WithMany()
+                .HasForeignKey(ct => ct.TeacherId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configure Course -> Assignment Relationship (One-to-Many)
             modelBuilder.Entity<Assignment>()
