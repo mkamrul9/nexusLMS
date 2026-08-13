@@ -54,6 +54,17 @@ namespace AssignmentSubmissionSystem.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(s => s.StudentId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a user if they have submissions
+                
+            // Seed Demo Users
+            var adminId = Guid.NewGuid();
+            var teacherId = Guid.NewGuid();
+            var studentId = Guid.NewGuid();
+
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = adminId, Name = "System Admin", Email = "admin@demo.com", Password = "Password123!", Role = "Admin" },
+                new User { Id = teacherId, Name = "Demo Teacher", Email = "teacher@demo.com", Password = "Password123!", Role = "Teacher" },
+                new User { Id = studentId, Name = "Demo Student", Email = "student@demo.com", Password = "Password123!", Role = "Student" }
+            );
         }
     }
 }
