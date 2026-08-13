@@ -78,6 +78,34 @@ export default function LoginPage() {
             Sign In
           </button>
         </div>
+
+        {/* Demo Credentials Section */}
+        <div className="mt-8 pt-6 border-t border-gray-200/60">
+          <p className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Quick Demo Login</p>
+          <div className="grid grid-cols-3 gap-2">
+            <button 
+              type="button"
+              onClick={() => { setEmail('admin@demo.com'); setPassword('Password123!'); }}
+              className="px-2 py-2 text-xs font-medium text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            >
+              Admin
+            </button>
+            <button 
+              type="button"
+              onClick={() => { setEmail('teacher@demo.com'); setPassword('Password123!'); }}
+              className="px-2 py-2 text-xs font-medium text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+            >
+              Teacher
+            </button>
+            <button 
+              type="button"
+              onClick={() => { setEmail('student@demo.com'); setPassword('Password123!'); }}
+              className="px-2 py-2 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              Student
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );

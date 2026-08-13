@@ -56,14 +56,52 @@ namespace AssignmentSubmissionSystem.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a user if they have submissions
                 
             // Seed Demo Users
-            var adminId = Guid.NewGuid();
-            var teacherId = Guid.NewGuid();
-            var studentId = Guid.NewGuid();
+            var adminId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var teacherId = Guid.Parse("00000000-0000-0000-0000-000000000002");
+            var studentId = Guid.Parse("00000000-0000-0000-0000-000000000003");
 
             modelBuilder.Entity<User>().HasData(
                 new User { Id = adminId, Name = "System Admin", Email = "admin@demo.com", Password = "Password123!", Role = "Admin" },
                 new User { Id = teacherId, Name = "Demo Teacher", Email = "teacher@demo.com", Password = "Password123!", Role = "Teacher" },
                 new User { Id = studentId, Name = "Demo Student", Email = "student@demo.com", Password = "Password123!", Role = "Student" }
+            );
+
+            // Seed Dummy Course
+            var courseId = Guid.Parse("00000000-0000-0000-0000-000000000100");
+            modelBuilder.Entity<Course>().HasData(
+                new Course { Id = courseId, Name = "Introduction to Computer Science", SubjectCode = "CS101", Description = "Learn the basics of programming." }
+            );
+
+            // Assign Teacher to Course
+            modelBuilder.Entity<CourseTeacher>().HasData(
+                new CourseTeacher { CourseId = courseId, TeacherId = teacherId }
+            );
+
+            // Seed Dummy Assignment
+            var assignmentId = Guid.Parse("00000000-0000-0000-0000-000000000200");
+            modelBuilder.Entity<Assignment>().HasData(
+                new { 
+                    Id = assignmentId, 
+                    Title = "Build a REST API", 
+                    Description = "Create a basic API using C# and ASP.NET Core.", 
+                    Deadline = DateTime.UtcNow.AddDays(7), 
+                    MaximumMarks = 100, 
+                    IsPublished = true, 
+                    CourseId = courseId 
+                }
+            );
+
+            // Seed Dummy Submission
+            var submissionId = Guid.Parse("00000000-0000-0000-0000-000000000300");
+            modelBuilder.Entity<Submission>().HasData(
+                new Submission {
+                    Id = submissionId,
+                    AssignmentId = assignmentId,
+                    StudentId = studentId,
+                    AnswerContent = "Here is my code for the REST API.",
+                    SubmittedAt = DateTime.UtcNow.AddHours(-2),
+                    Status = "Submitted"
+                }
             );
         }
     }
