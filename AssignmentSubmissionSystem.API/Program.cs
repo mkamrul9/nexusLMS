@@ -42,6 +42,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register the generic repository
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+// Register TokenService
+builder.Services.AddScoped<AssignmentSubmissionSystem.Infrastructure.Services.TokenService>();
+
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
