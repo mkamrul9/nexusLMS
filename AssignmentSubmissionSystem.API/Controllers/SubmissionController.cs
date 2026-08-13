@@ -71,5 +71,38 @@ namespace AssignmentSubmissionSystem.API.Controllers
             await _submissionRepository.UpdateAsync(submission);
             return Ok(new { message = "Assignment updated successfully." });
         }
+
+        [HttpPut("{submissionId}/grade")]
+        [Authorize(Roles = "Teacher")] // Strictly Teacher access
+        public async Task<IActionResult> GradeSubmission(Guid submissionId, [FromBody] GradeSubmissionDto dto)
+        {
+            var submission = await _submissionRepository.GetByIdAsync(submissionId);
+            if (submission == null) return NotFound("Submission not found.");
+        
+            // Optional but recommended: Verify the teacher grading it is assigned to the course
+            
+            // Update the submission with grading data
+            submission.MarksAwarded = dto.Marks;
+            submission.Feedback = dto.Feedback;
+            submission.Status = dto.Status;
+        
+            await _submissionRepository.UpdateAsync(submission);
+        
+            return Ok(new { message = "Submission graded successfully." });
+        }
+
+        [HttpGet("assignment/{assignmentId}")]
+        [Authorize(Roles = "Teacher")] // Strictly Teacher access
+        public async Task<IActionResult> GetSubmissionsForAssignment(Guid assignmentId)
+        {
+            // Note: In a real implementation with EF Core, you would likely need a specialized 
+            // repository method to filter submissions by AssignmentId.
+            var allSubmissions = await _submissionRepository.GetAllAsync();
+            
+            // Quick in-memory filter for demonstration (use database filtering in production)
+            var assignmentSubmissions = allSubmissions.Where(s => s.AssignmentId == assignmentId);
+            
+            return Ok(assignmentSubmissions);
+        }
     }
 }
