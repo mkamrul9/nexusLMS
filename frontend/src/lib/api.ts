@@ -13,4 +13,28 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 401) {
+        // Unauthorized - token expired or invalid
+        localStorage.removeItem('token');
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+      } else if (status === 400) {
+        // Bad Request - often validation errors from ASP.NET Core
+        console.error('Validation Error:', error.response.data);
+        alert(error.response.data.message || 'Invalid data submitted.');
+      }
+    } else {
+      alert('Network error. Please check your connection to the server.');
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

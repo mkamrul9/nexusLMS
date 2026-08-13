@@ -12,6 +12,20 @@ export default function TeacherDashboard() {
 
   const handleCreateAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const currentDate = new Date();
+    const selectedDate = new Date(deadline);
+
+    if (selectedDate <= currentDate) {
+      alert('Deadline must be a future date.');
+      return; // Stop execution
+    }
+
+    if (maxMarks < 1 || maxMarks > 1000) {
+      alert('Maximum marks must be between 1 and 1000.');
+      return;
+    }
+
     try {
       await api.post('/assignment', {
         title,
