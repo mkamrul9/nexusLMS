@@ -100,7 +100,8 @@ namespace AssignmentSubmissionSystem.Infrastructure.Persistence
                     StudentId = studentId,
                     AnswerContent = "Here is my code for the REST API.",
                     SubmittedAt = DateTime.UtcNow.AddHours(-2),
-                    Status = "Submitted"
+                    Status = "Submitted",
+                    Feedback = ""
                 }
             );
         }
