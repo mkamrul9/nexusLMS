@@ -86,6 +86,22 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        var exceptionHandlerPathFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+        
+        await context.Response.WriteAsJsonAsync(new { 
+            message = "An internal server error occurred.", 
+            details = exception?.Message 
+        });
+    });
+});
+
 app.UseAuthentication(); // Must be called before UseAuthorization
 app.UseAuthorization();
 
