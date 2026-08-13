@@ -26,6 +26,10 @@ export default function LoginPage() {
       // E.g. 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
       const userRole = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
+      // Set cookies for middleware
+      document.cookie = `token=${token}; path=/`;
+      document.cookie = `role=${userRole}; path=/`;
+
       if (userRole === 'Admin') router.push('/admin');
       else if (userRole === 'Teacher') router.push('/teacher');
       else if (userRole === 'Student') router.push('/student');
