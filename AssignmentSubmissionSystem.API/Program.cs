@@ -2,18 +2,24 @@ using System.Text;
 using AssignmentSubmissionSystem.Domain.Interfaces;
 using AssignmentSubmissionSystem.Infrastructure.Persistence;
 using AssignmentSubmissionSystem.Infrastructure.Repositories;
+using AssignmentSubmissionSystem.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ============================================================================
+// 1. SERVICES CONFIGURATION
+// ============================================================================
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// ─── Swagger Configuration ──────────────────────────────────────────────────
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Assignment API", Version = "v1" });
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "NexusLMS API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -30,14 +36,15 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
 
+// ─── Database Configuration ─────────────────────────────────────────────────
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// If the connection string is a Render URL (postgres:// or postgresql://), convert it to ADO.NET format
+// Convert Render PostgreSQL URL format to ADO.NET standard format if needed
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
 {
     var databaseUri = new Uri(connectionString);
@@ -51,20 +58,23 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
                        $"SSL Mode=Require;Trust Server Certificate=true;";
 }
 
-// Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Register the generic repository
+// ─── Dependency Injection ───────────────────────────────────────────────────
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<TokenService>();
 
-// Register TokenService
-builder.Services.AddScoped<AssignmentSubmissionSystem.Infrastructure.Services.TokenService>();
-
-// Configure JWT Authentication
+// ─── Authentication & Security ──────────────────────────────────────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var jwtKey = builder.Configuration["Jwt:Key"];
+        if (string.IsNullOrEmpty(jwtKey))
+        {
+            throw new InvalidOperationException("JWT Key is not configured.");
+        }
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -73,13 +83,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
 builder.Services.AddAuthorization();
 
-// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -89,19 +98,22 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+
+// ============================================================================
+// 2. HTTP REQUEST PIPELINE
+// ============================================================================
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Enable Swagger UI unconditionally (useful for demo/production testing)
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAll");
 
+// ─── Global Error Handling ──────────────────────────────────────────────────
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -118,10 +130,11 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-app.UseAuthentication(); // Must be called before UseAuthorization
+app.UseAuthentication(); // Must precede UseAuthorization
 app.UseAuthorization();
 
-// Apply pending migrations automatically on startup
+// ─── Auto-Migrations ────────────────────────────────────────────────────────
+// Applies pending EF Core migrations automatically on startup
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
