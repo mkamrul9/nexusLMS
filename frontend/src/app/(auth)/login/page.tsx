@@ -27,16 +27,21 @@ export default function LoginPage() {
       const userEmail = decoded.sub || decoded.email || '';
       const displayName = userEmail.split('@')[0] || userRole;
 
+      const normalizedRole = userRole?.toLowerCase() || '';
+
       document.cookie = `token=${token}; path=/`;
       document.cookie = `role=${userRole}; path=/`;
       document.cookie = `userName=${encodeURIComponent(displayName)}; path=/`;
 
       toast.success(`Welcome back! Logged in as ${userRole}.`);
 
-      if (userRole === 'Admin') window.location.href = '/admin';
-      else if (userRole === 'Teacher') window.location.href = '/teacher';
-      else if (userRole === 'Student') window.location.href = '/student';
-      else window.location.href = '/';
+      // Add a slight delay to ensure cookies are persisted before navigation
+      setTimeout(() => {
+        if (normalizedRole === 'admin') window.location.href = '/admin';
+        else if (normalizedRole === 'teacher') window.location.href = '/teacher';
+        else if (normalizedRole === 'student') window.location.href = '/student';
+        else window.location.href = '/';
+      }, 200);
     } catch (error: any) {
       console.error('Login failed', error);
       toast.error(error.response?.data?.message || 'Invalid email or password.');

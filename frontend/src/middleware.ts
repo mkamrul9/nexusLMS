@@ -15,17 +15,17 @@ export function middleware(request: NextRequest) {
   // you often store the user's role in a separate plain text cookie during login, 
   // or use an edge-compatible JWT decoder.
   
-  const role = request.cookies.get('role')?.value;
+  const role = request.cookies.get('role')?.value?.toLowerCase();
 
-  if (path.startsWith('/admin') && role !== 'Admin') {
+  if (path.startsWith('/admin') && role !== 'admin') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
   
-  if (path.startsWith('/teacher') && role !== 'Teacher') {
+  if (path.startsWith('/teacher') && role !== 'teacher') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (path.startsWith('/student') && role !== 'Student') {
+  if (path.startsWith('/student') && role !== 'student') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
