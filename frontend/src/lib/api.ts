@@ -28,16 +28,14 @@ api.interceptors.response.use(
       } else if (status === 400) {
         // Bad Request - often validation errors from ASP.NET Core
         console.error('Validation Error:', error.response.data);
-        alert(error.response.data.message || 'Invalid data submitted.');
       } else if (status === 500) {
         // Internal Server Error
         console.error('Server Error:', error.response.data);
-        alert(`Server Error: ${error.response.data.details || 'Internal server error occurred.'}`);
       } else {
-        alert(`Error: ${status}. Please try again.`);
+        console.error(`Error: ${status}. Please try again.`);
       }
     } else {
-      alert('Network error. Please check your connection to the server.');
+      console.error('Network error. Please check your connection to the server.');
     }
     return Promise.reject(error);
   }

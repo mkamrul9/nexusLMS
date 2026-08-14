@@ -10,7 +10,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Teacher")] // Restricted to Teachers
+    [Authorize] // Restricted to authenticated users by default
     public class AssignmentController : ControllerBase
     {
         private readonly IRepository<Assignment> _assignmentRepository;
@@ -20,12 +20,19 @@ namespace AssignmentSubmissionSystem.API.Controllers
             _assignmentRepository = assignmentRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAssignments()
+        {
+            var assignments = await _assignmentRepository.GetAllAsync();
+            return Ok(assignments);
+        }
+
         [HttpPost]
+        [Authorize(Roles = "Teacher")] // Only Teachers can create assignments
         public async Task<IActionResult> CreateAssignment([FromBody] CreateAssignmentDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // Creates a new assignment as a draft by default (IsPublished = false)
             var assignment = new Assignment(dto.Title, dto.Description, dto.Deadline, dto.MaximumMarks, dto.CourseId);
             
             await _assignmentRepository.AddAsync(assignment);
@@ -42,12 +49,13 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost("{id}/publish")]
+        [Authorize(Roles = "Teacher")] // Only Teachers can publish
         public async Task<IActionResult> PublishAssignment(Guid id)
         {
             var assignment = await _assignmentRepository.GetByIdAsync(id);
             if (assignment == null) return NotFound();
 
-            assignment.Publish(); // Changes the draft state to published
+            assignment.Publish();
             await _assignmentRepository.UpdateAsync(assignment);
 
             return Ok(new { message = "Assignment published successfully." });

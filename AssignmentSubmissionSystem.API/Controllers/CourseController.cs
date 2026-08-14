@@ -10,7 +10,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // Strictly limits access to the Admin role
+    [Authorize] // Allow all authenticated users to access endpoints unless restricted
     public class CourseController : ControllerBase
     {
         private readonly IRepository<Course> _courseRepository;
@@ -35,6 +35,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)
         {
             if (!ModelState.IsValid)

@@ -31,11 +31,15 @@ namespace AssignmentSubmissionSystem.API.Controllers
 
             if (DateTime.UtcNow > assignment.Deadline)
             {
-                return BadRequest("The deadline for this assignment has passed.");
+                return BadRequest(new { message = "The deadline for this assignment has passed." });
             }
 
-            // In a real app, extract StudentId from the JWT claims
-            var studentId = Guid.NewGuid(); // Placeholder
+            // Extract the StudentId from the JWT claims
+            var studentIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out var studentId))
+            {
+                return Unauthorized(new { message = "Could not identify the logged-in student." });
+            }
 
             var submission = new Submission
             {
@@ -43,7 +47,9 @@ namespace AssignmentSubmissionSystem.API.Controllers
                 AssignmentId = dto.AssignmentId,
                 StudentId = studentId,
                 AnswerContent = dto.AnswerContent,
-                SubmittedAt = DateTime.UtcNow
+                SubmittedAt = DateTime.UtcNow,
+                Feedback = "",
+                Status = "Submitted"
             };
 
             await _submissionRepository.AddAsync(submission);
@@ -95,14 +101,24 @@ namespace AssignmentSubmissionSystem.API.Controllers
         [Authorize(Roles = "Teacher")] // Strictly Teacher access
         public async Task<IActionResult> GetSubmissionsForAssignment(Guid assignmentId)
         {
-            // Note: In a real implementation with EF Core, you would likely need a specialized 
-            // repository method to filter submissions by AssignmentId.
             var allSubmissions = await _submissionRepository.GetAllAsync();
-            
-            // Quick in-memory filter for demonstration (use database filtering in production)
             var assignmentSubmissions = allSubmissions.Where(s => s.AssignmentId == assignmentId);
-            
             return Ok(assignmentSubmissions);
+        }
+
+        [HttpGet("my-submissions")]
+        [Authorize] // Any authenticated user — filters by student ID internally
+        public async Task<IActionResult> GetMySubmissions()
+        {
+            var studentIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(studentIdClaim) || !Guid.TryParse(studentIdClaim, out var studentId))
+            {
+                return Ok(new List<Submission>()); // Not a student or no ID claim — return empty
+            }
+
+            var allSubmissions = await _submissionRepository.GetAllAsync();
+            var mySubmissions = allSubmissions.Where(s => s.StudentId == studentId);
+            return Ok(mySubmissions);
         }
     }
 }

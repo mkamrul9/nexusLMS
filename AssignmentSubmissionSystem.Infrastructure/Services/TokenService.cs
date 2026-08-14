@@ -22,6 +22,7 @@ namespace AssignmentSubmissionSystem.Infrastructure.Services
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Used to identify the user in protected endpoints
                 new Claim(ClaimTypes.Role, user.Role ?? "Student") // Injects "Admin", "Teacher", or "Student"
             };
 
