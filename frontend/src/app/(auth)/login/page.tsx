@@ -33,10 +33,10 @@ export default function LoginPage() {
 
       toast.success(`Welcome back! Logged in as ${userRole}.`);
 
-      if (userRole === 'Admin') router.push('/admin');
-      else if (userRole === 'Teacher') router.push('/teacher');
-      else if (userRole === 'Student') router.push('/student');
-      else router.push('/');
+      if (userRole === 'Admin') window.location.href = '/admin';
+      else if (userRole === 'Teacher') window.location.href = '/teacher';
+      else if (userRole === 'Student') window.location.href = '/student';
+      else window.location.href = '/';
     } catch (error: any) {
       console.error('Login failed', error);
       toast.error(error.response?.data?.message || 'Invalid email or password.');

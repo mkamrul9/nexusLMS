@@ -5,6 +5,10 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { ClipboardList, GraduationCap, Settings, Key, BookOpen } from 'lucide-react';
 
+/**
+ * Reads the value of a named cookie from document.cookie.
+ * Returns null during SSR (when document is not available) or if the cookie is not set.
+ */
 function getCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -23,6 +27,12 @@ const roleNavLinks: Record<string, { label: string; href: string; icon: React.Re
   ],
 };
 
+/**
+ * Top navigation bar rendered on every page.
+ * Reads the user's role and auth state from localStorage (token) and cookies (role, userName).
+ * Updates automatically on route changes via the `pathname` dependency in useEffect.
+ * Provides role-specific nav links, a user avatar dropdown, and a mobile hamburger menu.
+ */
 export default function Navbar() {
   const [token, setToken]           = useState<string | null>(null);
   const [role, setRole]             = useState<string | null>(null);

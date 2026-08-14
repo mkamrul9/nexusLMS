@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "AssignmentSubmissionSystem.Application/1.0.0": {
+        "dependencies": {
+          "AssignmentSubmissionSystem.Domain": "1.0.0"
+        },
+        "runtime": {
+          "AssignmentSubmissionSystem.Application.dll": {}
+        }
+      },
+      "AssignmentSubmissionSystem.Domain/1.0.0": {
+        "runtime": {
+          "AssignmentSubmissionSystem.Domain.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AssignmentSubmissionSystem.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AssignmentSubmissionSystem.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

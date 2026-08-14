@@ -1,0 +1,16 @@
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\bin\Release\net8.0\AssignmentSubmissionSystem.Application.deps.json
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\bin\Release\net8.0\AssignmentSubmissionSystem.Application.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\bin\Release\net8.0\AssignmentSubmissionSystem.Application.pdb
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\bin\Release\net8.0\AssignmentSubmissionSystem.Domain.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\bin\Release\net8.0\AssignmentSubmissionSystem.Domain.pdb
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.csproj.AssemblyReference.cache
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.AssemblyInfoInputs.cache
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.AssemblyInfo.cs
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.csproj.CoreCompileInputs.cache
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.sourcelink.json
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\Assignme.36E1DA02.Up2Date
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\refint\AssignmentSubmissionSystem.Application.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\AssignmentSubmissionSystem.Application.pdb
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Application\obj\Release\net8.0\ref\AssignmentSubmissionSystem.Application.dll

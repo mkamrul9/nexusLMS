@@ -1,0 +1,12 @@
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\bin\Release\net8.0\AssignmentSubmissionSystem.Domain.deps.json
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\bin\Release\net8.0\AssignmentSubmissionSystem.Domain.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\bin\Release\net8.0\AssignmentSubmissionSystem.Domain.pdb
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.AssemblyInfoInputs.cache
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.AssemblyInfo.cs
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.csproj.CoreCompileInputs.cache
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.sourcelink.json
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\refint\AssignmentSubmissionSystem.Domain.dll
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\AssignmentSubmissionSystem.Domain.pdb
+D:\dev\UNIQUE WORK\LMS\AssignmentSubmissionSystem.Domain\obj\Release\net8.0\ref\AssignmentSubmissionSystem.Domain.dll

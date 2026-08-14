@@ -2,22 +2,39 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
-import { Assignment } from '@/lib/types';
+import { Assignment, Course } from '@/lib/types';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { Calendar, Target, Rocket } from 'lucide-react';
 
+/**
+ * Teacher Workspace page — the primary dashboard for teacher-role users.
+ *
+ * Features:
+ * - Create new assignments (saved as drafts initially)
+ * - Publish drafts to make them visible to students
+ * - View all assignments with status, deadline, and marks
+ * - Navigate to per-assignment submission/grading pages
+ */
 export default function TeacherDashboard() {
-  const [title, setTitle] = useState('');
+  // ── Form state for creating a new assignment ──
+  const [title, setTitle]           = useState('');
   const [description, setDescription] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [maxMarks, setMaxMarks] = useState(100);
-  const [courseId, setCourseId] = useState('');
+  const [deadline, setDeadline]     = useState('');
+  const [maxMarks, setMaxMarks]     = useState(100);
+  const [courseId, setCourseId]     = useState('');
+
+  // ── Data state ──
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [courses, setCourses]         = useState<Course[]>([]);
+  const [loading, setLoading]         = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /**
+   * Fetches both assignments and courses from the API in a single parallel call.
+   * Used on initial load and after any mutation (create/publish).
+   * Having a single fetch function eliminates the previous redundant `fetchAssignments` function.
+   */
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -27,30 +44,29 @@ export default function TeacherDashboard() {
       ]);
       setAssignments(assignRes.data);
       setCourses(coursesRes.data);
+      // Pre-select the first available course when none is selected yet
       if (!courseId && coursesRes.data.length > 0) {
         setCourseId(coursesRes.data[0].id);
       }
     } catch (error) {
-      console.error('Failed to fetch data', error);
+      console.error('Failed to fetch dashboard data:', error);
       toast.error('Failed to load dashboard data.');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchAssignments = async () => {
-    try {
-      const response = await api.get('/assignment');
-      setAssignments(response.data);
-    } catch (error) {
-      console.error('Failed to fetch assignments', error);
-    }
-  };
-
+  // Fetch data once on component mount
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Handles the assignment creation form submission.
+   * Validates the deadline and max marks client-side before calling the API.
+   * On success, resets the form and refreshes the assignments list.
+   */
   const handleCreateAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -77,43 +93,50 @@ export default function TeacherDashboard() {
         maximumMarks: maxMarks,
         courseId
       });
+      // Reset form fields after successful creation
       setTitle('');
       setDescription('');
       setDeadline('');
       setMaxMarks(100);
       toast.success('Assignment created as draft!');
-      fetchAssignments();
+      fetchData(); // Refresh the full list to reflect the new assignment
     } catch (error: any) {
-      console.error('Failed to create assignment', error);
+      console.error('Failed to create assignment:', error);
       toast.error(error.response?.data?.message || 'Failed to create assignment. Check all fields.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /**
+   * Publishes a draft assignment, making it visible to students.
+   * Refreshes the assignment list to reflect the updated status.
+   */
   const handlePublish = async (assignmentId: string) => {
     try {
       await api.post(`/assignment/${assignmentId}/publish`);
       toast.success('Assignment published! Students can now see it.');
-      fetchAssignments();
+      fetchData(); // Refresh to update the Published/Draft badge
     } catch (error: any) {
-      console.error('Failed to publish assignment', error);
+      console.error('Failed to publish assignment:', error);
       toast.error(error.response?.data?.message || 'Failed to publish assignment.');
     }
   };
 
+  // Derived counts for the stats strip
   const publishedCount = assignments.filter(a => a.isPublished).length;
-  const draftCount = assignments.filter(a => !a.isPublished).length;
+  const draftCount     = assignments.filter(a => !a.isPublished).length;
 
   return (
     <div className="min-h-screen bg-transparent pb-12">
       <div className="max-w-7xl mx-auto p-6 pt-8">
 
-        {/* Header */}
+        {/* ── Page Header ─────────────────────────────────────────── */}
         <div className="glass-panel p-8 mb-8">
           <h1 className="text-4xl font-bold text-gradient mb-2">Teacher Workspace</h1>
           <p className="text-slate-500">Create and manage assignments. Review and grade student submissions.</p>
           <div className="flex gap-4 mt-5">
+            {/* Published count stat */}
             <div className="glass-card px-5 py-3 flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center">
                 <svg className="w-5 h-5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,6 +148,7 @@ export default function TeacherDashboard() {
                 <p className="text-xs text-slate-500">Published</p>
               </div>
             </div>
+            {/* Draft count stat */}
             <div className="glass-card px-5 py-3 flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center">
                 <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,7 +165,7 @@ export default function TeacherDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Create Assignment Form */}
+          {/* ── Create Assignment Form ───────────────────────────── */}
           <div className="lg:col-span-1">
             <section className="glass-card p-6 sticky top-24">
               <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
@@ -167,8 +191,7 @@ export default function TeacherDashboard() {
                   <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Description *</label>
                   <textarea
                     placeholder="Provide detailed instructions..."
-                    className="form-input resize-none"
-                    style={{ height: '80px' }}
+                    className="form-input resize-none h-20"
                     value={description} onChange={e => setDescription(e.target.value)} required
                   />
                 </div>
@@ -222,7 +245,7 @@ export default function TeacherDashboard() {
             </section>
           </div>
 
-          {/* Assignments List */}
+          {/* ── Assignments List ─────────────────────────────────── */}
           <div className="lg:col-span-2 space-y-4">
             <h2 className="text-lg font-bold text-slate-700 px-1">Your Assignments</h2>
 
@@ -248,6 +271,7 @@ export default function TeacherDashboard() {
                   </div>
 
                   <div className="flex gap-2 shrink-0 w-full sm:w-auto">
+                    {/* Only show Publish button for draft assignments */}
                     {!assignment.isPublished && (
                       <button
                         onClick={() => handlePublish(assignment.id)}

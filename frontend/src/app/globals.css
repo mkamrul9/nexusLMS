@@ -116,7 +116,11 @@
     background: white;
   }
 
-  /* Status badges */
+  /*
+   * Status badge utilities — used on submission cards, user tables, and assignment lists.
+   * Each badge variant maps to a semantic meaning: teal=success/published, warning=draft/pending,
+   * info=submitted/in-progress, danger=closed/failed/admin.
+   */
   .badge-success { background: #d1fae5; color: #065f46; border-radius: 9999px; padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
   .badge-warning { background: #fef3c7; color: #92400e; border-radius: 9999px; padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
   .badge-info    { background: #dbeafe; color: #1e40af; border-radius: 9999px; padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
