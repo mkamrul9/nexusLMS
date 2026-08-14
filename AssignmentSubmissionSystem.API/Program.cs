@@ -35,9 +35,25 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// If the connection string is a Render postgres:// URL, convert it to ADO.NET format
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+{
+    var databaseUri = new Uri(connectionString);
+    var userInfo = databaseUri.UserInfo.Split(':');
+    
+    connectionString = $"Host={databaseUri.Host};" +
+                       $"Port={(databaseUri.Port > 0 ? databaseUri.Port : 5432)};" +
+                       $"Database={databaseUri.LocalPath.Substring(1)};" +
+                       $"Username={userInfo[0]};" +
+                       $"Password={userInfo[1]};" +
+                       $"SSL Mode=Require;Trust Server Certificate=true;";
+}
+
 // Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Register the generic repository
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
