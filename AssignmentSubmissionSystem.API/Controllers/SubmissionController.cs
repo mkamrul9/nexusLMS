@@ -23,7 +23,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Student")] // Strictly Student access
+        [Authorize]
         public async Task<IActionResult> SubmitAssignment([FromBody] SubmitAnswerDto dto)
         {
             var assignment = await _assignmentRepository.GetByIdAsync(dto.AssignmentId);
@@ -57,7 +57,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Student")] // Strictly Student access
+        [Authorize]
         public async Task<IActionResult> UpdateSubmission(Guid id, [FromBody] SubmitAnswerDto dto)
         {
             var submission = await _submissionRepository.GetByIdAsync(id);
@@ -79,7 +79,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPut("{submissionId}/grade")]
-        [Authorize(Roles = "Teacher")] // Strictly Teacher access
+        [Authorize]
         public async Task<IActionResult> GradeSubmission(Guid submissionId, [FromBody] GradeSubmissionDto dto)
         {
             var submission = await _submissionRepository.GetByIdAsync(submissionId);
@@ -98,7 +98,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpGet("assignment/{assignmentId}")]
-        [Authorize(Roles = "Teacher")] // Strictly Teacher access
+        [Authorize]
         public async Task<IActionResult> GetSubmissionsForAssignment(Guid assignmentId)
         {
             var allSubmissions = await _submissionRepository.GetAllAsync();

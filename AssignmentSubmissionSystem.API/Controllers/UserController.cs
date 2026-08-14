@@ -10,7 +10,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // Strictly limits access to the Admin role
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IRepository<User> _userRepository;

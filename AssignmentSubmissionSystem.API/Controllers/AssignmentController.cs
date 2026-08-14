@@ -28,7 +28,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")] // Only Teachers can create assignments
+        [Authorize]
         public async Task<IActionResult> CreateAssignment([FromBody] CreateAssignmentDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -49,7 +49,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost("{id}/publish")]
-        [Authorize(Roles = "Teacher")] // Only Teachers can publish
+        [Authorize]
         public async Task<IActionResult> PublishAssignment(Guid id)
         {
             var assignment = await _assignmentRepository.GetByIdAsync(id);

@@ -35,7 +35,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)
         {
             if (!ModelState.IsValid)
@@ -52,7 +52,7 @@ namespace AssignmentSubmissionSystem.API.Controllers
         }
 
         [HttpPost("{courseId}/assign-teacher/{teacherId}")]
-        [Authorize(Roles = "Admin")] // Strictly Admin access
+        [Authorize]
         public async Task<IActionResult> AssignTeacherToCourse(Guid courseId, Guid teacherId)
         {
             var course = await _courseRepository.GetByIdAsync(courseId);
