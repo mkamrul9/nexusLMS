@@ -24,6 +24,8 @@ COPY --from=build /app/publish .
 
 # Expose port 80/8080 (Render expects web services to listen on HTTP)
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "AssignmentSubmissionSystem.API.dll"]
