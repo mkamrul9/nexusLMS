@@ -37,8 +37,8 @@ builder.Services.AddSwaggerGen(c =>
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// If the connection string is a Render postgres:// URL, convert it to ADO.NET format
-if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+// If the connection string is a Render URL (postgres:// or postgresql://), convert it to ADO.NET format
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
 {
     var databaseUri = new Uri(connectionString);
     var userInfo = databaseUri.UserInfo.Split(':');
@@ -47,7 +47,7 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
                        $"Port={(databaseUri.Port > 0 ? databaseUri.Port : 5432)};" +
                        $"Database={databaseUri.LocalPath.Substring(1)};" +
                        $"Username={userInfo[0]};" +
-                       $"Password={userInfo[1]};" +
+                       $"Password={(userInfo.Length > 1 ? userInfo[1] : "")};" +
                        $"SSL Mode=Require;Trust Server Certificate=true;";
 }
 
